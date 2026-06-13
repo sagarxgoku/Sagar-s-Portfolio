@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sagar Sharma — Frontend Developer & Creative Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d0e12;
+    --bg-elev:#15171d;
+    --surface:#1c1f27;
+    --border:#2a2e38;
+    --text:#f3f1ec;
+    --muted:#9a9da8;
+    --accent:#ff5d3a;
+    --accent-soft:rgba(255,93,58,0.14);
+    --accent2:#4ecdc4;
+    --accent2-soft:rgba(78,205,196,0.14);
+    --radius:14px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  ::selection{background:var(--accent);color:#0d0e12;}
+
+  h1,h2,h3,h4{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    letter-spacing:-0.02em;
+  }
+
+  .mono{
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  a{color:inherit;text-decoration:none;}
+
+  img{max-width:100%;display:block;}
+
+  .container{
+    max-width:1140px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  /* ===== Background atmosphere ===== */
+  .bg-grid{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(circle at 50% 0%, black 0%, transparent 70%);
+  }
+  .bg-glow{
+    position:fixed;
+    top:-220px;
+    right:-180px;
+    width:560px;
+    height:560px;
+    background:radial-gradient(circle, var(--accent-soft), transparent 70%);
+    z-index:-1;
+    filter:blur(10px);
+  }
+  .bg-glow2{
+    position:fixed;
+    bottom:-260px;
+    left:-200px;
+    width:560px;
+    height:560px;
+    background:radial-gradient(circle, var(--accent2-soft), transparent 70%);
+    z-index:-1;
+    filter:blur(10px);
+  }
+
+  /* ===== Navbar ===== */
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:100;
+    background:rgba(13,14,18,0.7);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 28px;
+    max-width:1140px;
+    margin:0 auto;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:1.05rem;
+    letter-spacing:0.02em;
+  }
+  .logo-mark{
+    width:34px;height:34px;
+    border-radius:9px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    color:#0d0e12;
+    font-family:'JetBrains Mono',monospace;
+    font-weight:600;
+    font-size:0.85rem;
+  }
+  .nav-links{
+    display:flex;
+    gap:34px;
+    align-items:center;
+  }
+  .nav-links a{
+    font-size:0.92rem;
+    color:var(--muted);
+    position:relative;
+    padding:6px 0;
+    transition:color .25s ease;
+  }
+  .nav-links a::after{
+    content:'';
+    position:absolute;
+    left:0;bottom:0;
+    width:0%;
+    height:1px;
+    background:var(--accent);
+    transition:width .25s ease;
+  }
+  .nav-links a:hover,.nav-links a.active{color:var(--text);}
+  .nav-links a.active::after,.nav-links a:hover::after{width:100%;}
+
+  .nav-cta{
+    border:1px solid var(--border);
+    padding:9px 18px;
+    border-radius:999px;
+    font-size:0.85rem;
+    font-family:'JetBrains Mono',monospace;
+    transition:border-color .25s ease, color .25s ease;
+  }
+  .nav-cta:hover{border-color:var(--accent);color:var(--accent);}
+
+  .hamburger{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    cursor:pointer;
+    background:none;border:none;
+    padding:6px;
+  }
+  .hamburger span{
+    width:22px;height:2px;background:var(--text);
+    transition:all .3s ease;
+  }
+
+  /* ===== Mobile menu overlay ===== */
+  .mobile-menu{
+    position:fixed;
+    inset:0;
+    background:var(--bg-elev);
+    z-index:99;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:32px;
+    transform:translateY(-100%);
+    transition:transform .4s cubic-bezier(.6,0,.3,1);
+  }
+  .mobile-menu.open{transform:translateY(0);}
+  .mobile-menu a{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:1.8rem;
+    font-weight:600;
+    color:var(--text);
+  }
+  .mobile-menu .nav-cta{font-size:1rem;}
+
+  /* ===== Hero ===== */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:120px;
+    padding-bottom:80px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.82rem;
+    color:var(--accent2);
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:8px;height:8px;
+    border-radius:50%;
+    background:var(--accent2);
+    box-shadow:0 0 0 4px var(--accent2-soft);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 4px var(--accent2-soft);}
+    50%{box-shadow:0 0 0 8px transparent;}
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 7vw, 5.2rem);
+    line-height:1.04;
+    margin-bottom:22px;
+  }
+  .hero h1 span{
+    background:linear-gradient(120deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p.lead{
+    max-width:560px;
+    color:var(--muted);
+    font-size:1.08rem;
+    margin-bottom:34px;
+  }
+  .hero-actions{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:56px;
+  }
+  .btn{
+    padding:14px 28px;
+    border-radius:999px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:0.95rem;
+    transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#15171d;
+  }
+  .btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 30px -8px var(--accent);
+  }
+  .btn-ghost{
+    border:1px solid var(--border);
+    color:var(--text);
+  }
+  .btn-ghost:hover{border-color:var(--accent2);color:var(--accent2);transform:translateY(-2px);}
+
+  /* role chips */
+  .chips{display:flex;flex-wrap:wrap;gap:10px;}
+  .chip{
+    border:1px solid var(--border);
+    background:var(--surface);
+    padding:8px 16px;
+    border-radius:999px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.78rem;
+    color:var(--muted);
+  }
+
+  /* waveform divider */
+  .waveform{
+    display:flex;
+    align-items:flex-end;
+    gap:4px;
+    height:46px;
+    margin-top:60px;
+    opacity:0.85;
+  }
+  .waveform span{
+    flex:1;
+    border-radius:3px;
+    background:linear-gradient(180deg,var(--accent2),var(--accent));
+    animation:wave 1.4s ease-in-out infinite;
+    transform-origin:bottom;
+  }
+  @keyframes wave{
+    0%,100%{transform:scaleY(0.25);}
+    50%{transform:scaleY(1);}
+  }
+
+  /* ===== Section heading ===== */
+  .section{padding:120px 0;border-top:1px solid var(--border);}
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:64px;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .section-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.8rem;
+    color:var(--accent);
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+  }
+  .section-head h2{font-size:clamp(1.9rem,4vw,2.8rem);}
+  .section-num{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--muted);
+    font-size:0.85rem;
+  }
+
+  /* ===== About ===== */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:64px;
+    align-items:start;
+  }
+  .about-text p{color:var(--muted);margin-bottom:18px;font-size:1.02rem;}
+  .about-text strong{color:var(--text);}
+  .stat-row{
+    display:flex;
+    gap:40px;
+    margin-top:36px;
+    padding-top:28px;
+    border-top:1px solid var(--border);
+  }
+  .stat-num{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:2.2rem;
+    font-weight:700;
+    color:var(--accent2);
+  }
+  .stat-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.78rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+
+  /* timeline */
+  .timeline{position:relative;padding-left:28px;}
+  .timeline::before{
+    content:'';
+    position:absolute;
+    left:5px;top:6px;bottom:6px;
+    width:1px;
+    background:var(--border);
+  }
+  .t-item{position:relative;padding-bottom:38px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-item::before{
+    content:'';
+    position:absolute;
+    left:-28px;top:4px;
+    width:11px;height:11px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--accent2);
+  }
+  .t-date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.78rem;
+    color:var(--accent2);
+    margin-bottom:6px;
+    display:block;
+  }
+  .t-item h4{font-size:1.08rem;margin-bottom:4px;}
+  .t-item p{color:var(--muted);font-size:0.92rem;}
+
+  /* ===== Skills (timeline bars) ===== */
+  .skills-wrap{display:flex;flex-direction:column;gap:26px;}
+  .skill-row{
+    display:grid;
+    grid-template-columns:160px 1fr 70px;
+    align-items:center;
+    gap:24px;
+  }
+  .skill-name{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:1rem;
+  }
+  .skill-cat{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.7rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    margin-top:2px;
+  }
+  .track{
+    position:relative;
+    height:10px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .track .ticks{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:space-between;
+    padding:0 1px;
+  }
+  .track .ticks span{
+    width:1px;height:100%;
+    background:rgba(255,255,255,0.04);
+  }
+  .fill{
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:0%;
+    border-radius:6px;
+    transition:width 1.4s cubic-bezier(.16,1,.3,1);
+  }
+  .fill.dev{background:linear-gradient(90deg,var(--accent),#ff8a5d);}
+  .fill.creative{background:linear-gradient(90deg,var(--accent2),#8be9e2);}
+  .fill .head{
+    position:absolute;
+    right:-1px;top:50%;
+    width:14px;height:14px;
+    transform:translate(50%,-50%) rotate(45deg);
+    background:inherit;
+    border-radius:2px;
+    box-shadow:0 0 14px currentColor;
+  }
+  .skill-pct{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.95rem;
+    text-align:right;
+    color:var(--text);
+  }
+
+  /* ===== Services ===== */
+  .services-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+  }
+  .service-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:30px;
+    transition:transform .3s ease, border-color .3s ease;
+  }
+  .service-card:hover{
+    transform:translateY(-6px);
+    border-color:var(--accent2);
+  }
+  .service-icon{
+    width:42px;height:42px;
+    border-radius:10px;
+    background:var(--accent-soft);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:20px;
+    color:var(--accent);
+  }
+  .service-card:nth-child(even) .service-icon{
+    background:var(--accent2-soft);
+    color:var(--accent2);
+  }
+  .service-card h3{font-size:1.12rem;margin-bottom:10px;}
+  .service-card p{color:var(--muted);font-size:0.92rem;}
+
+  /* ===== Contact ===== */
+  .contact-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:64px;
+  }
+  .contact-info-item{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    margin-bottom:28px;
+  }
+  .contact-icon{
+    width:42px;height:42px;
+    flex-shrink:0;
+    border-radius:10px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent2);
+  }
+  .contact-info-item h4{font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-family:'JetBrains Mono',monospace;font-weight:500;margin-bottom:4px;}
+  .contact-info-item p{font-size:1.02rem;}
+
+  form{display:flex;flex-direction:column;gap:18px;}
+  .field{display:flex;flex-direction:column;gap:8px;}
+  .field label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.75rem;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+  }
+  .field input,.field textarea{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:0.95rem;
+    resize:vertical;
+    transition:border-color .25s ease;
+  }
+  .field input:focus,.field textarea:focus{
+    outline:none;
+    border-color:var(--accent2);
+  }
+  .form-status{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.82rem;
+    color:var(--accent2);
+    min-height:1.2em;
+  }
+
+  /* ===== Footer ===== */
+  footer{
+    border-top:1px solid var(--border);
+    padding:34px 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+    color:var(--muted);
+    font-size:0.85rem;
+  }
+  footer .mono{color:var(--muted);}
+
+  /* fade-in reveal */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .reveal.visible{opacity:1;transform:translateY(0);}
+
+  /* focus visibility */
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--accent2);
+    outline-offset:3px;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width:880px){
+    .nav-links{display:none;}
+    .hamburger{display:flex;}
+    .about-grid,.contact-grid{grid-template-columns:1fr;gap:48px;}
+    .services-grid{grid-template-columns:repeat(2,1fr);}
+    .skill-row{grid-template-columns:110px 1fr 56px;gap:14px;}
+  }
+  @media (max-width:560px){
+    .services-grid{grid-template-columns:1fr;}
+    .stat-row{flex-wrap:wrap;gap:24px;}
+    .section{padding:80px 0;}
+    .skill-row{grid-template-columns:1fr;gap:8px;}
+    .skill-pct{text-align:left;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+
+<header>
+  <nav>
+    <a href="#top" class="logo">
+      <span class="logo-mark">SS</span>
+      Sagar Sharma
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#contact" class="nav-cta" style="display:none" id="navCtaDesktop">Hire me</a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about">About</a>
+  <a href="#skills">Skills</a>
+  <a href="#services">Services</a>
+  <a href="#contact">Contact</a>
+  <a href="#contact" class="nav-cta">Hire me</a>
+</div>
+
+<main>
+  <!-- HERO -->
+  <section class="hero container" id="top">
+    <div class="eyebrow">Available for freelance &amp; collab work</div>
+    <h1>Frontend developer<br>&amp; <span>creative editor</span><br>from Lucknow.</h1>
+    <p class="lead">
+      I'm Sagar Sharma, 22 — I build clean, responsive websites with HTML, CSS and JavaScript,
+      and shape the visuals that go with them: thumbnails, graphics, photo edits and video edits.
+    </p>
+    <div class="hero-actions">
+      <a href="#skills" class="btn btn-primary">View my skills</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+    <div class="chips">
+      <span class="chip">Frontend Developer</span>
+      <span class="chip">Graphic Designer</span>
+      <span class="chip">Thumbnail Maker</span>
+      <span class="chip">Video Editor</span>
+      <span class="chip">Photo Editor</span>
+    </div>
+    <div class="waveform" aria-hidden="true">
+      <span style="animation-delay:0s"></span>
+      <span style="animation-delay:.1s"></span>
+      <span style="animation-delay:.2s"></span>
+      <span style="animation-delay:.3s"></span>
+      <span style="animation-delay:.15s"></span>
+      <span style="animation-delay:.05s"></span>
+      <span style="animation-delay:.25s"></span>
+      <span style="animation-delay:.35s"></span>
+      <span style="animation-delay:.1s"></span>
+      <span style="animation-delay:.2s"></span>
+      <span style="animation-delay:0s"></span>
+      <span style="animation-delay:.3s"></span>
+      <span style="animation-delay:.15s"></span>
+      <span style="animation-delay:.05s"></span>
+      <span style="animation-delay:.25s"></span>
+      <span style="animation-delay:.1s"></span>
+      <span style="animation-delay:.2s"></span>
+      <span style="animation-delay:0s"></span>
+      <span style="animation-delay:.3s"></span>
+      <span style="animation-delay:.15s"></span>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section container reveal" id="about">
+    <div class="section-head">
+      <div>
+        <div class="section-tag">Who I am</div>
+        <h2>About me</h2>
+      </div>
+      <div class="section-num">01 / 04</div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I'm <strong>Sagar Sharma</strong>, a 22-year-old frontend web developer and designer based in
+          Kakori, Lucknow. Over the past <strong>2 years</strong> I've been writing clean, responsive
+          code with HTML, CSS and JavaScript — turning ideas and designs into websites that work well
+          on any screen.
+        </p>
+        <p>
+          Alongside development, I work as a <strong>graphic designer, thumbnail maker, video editor
+          and photo editor</strong>. I enjoy moving between code and creative tools — from structuring
+          a webpage to grading footage in DaVinci Resolve or designing a thumbnail in Photoshop.
+        </p>
+        <p>
+          I'm currently pursuing my graduation at <strong>Sardar Bhagat Singh College</strong>. I
+          completed my High School in 2022 and Intermediate in 2024, both from
+          <strong>Aryan Academy Inter College</strong>.
+        </p>
+        <div class="stat-row">
+          <div>
+            <div class="stat-num">2+</div>
+            <div class="stat-label">Years coding</div>
+          </div>
+          <div>
+            <div class="stat-num">5</div>
+            <div class="stat-label">Creative skills</div>
+          </div>
+          <div>
+            <div class="stat-num">22</div>
+            <div class="stat-label">Years old</div>
+          </div>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="t-item">
+          <span class="t-date mono">PRESENT</span>
+          <h4>Graduation — In progress</h4>
+          <p>Sardar Bhagat Singh College</p>
+        </div>
+        <div class="t-item">
+          <span class="t-date mono">2024</span>
+          <h4>Intermediate</h4>
+          <p>Aryan Academy Inter College</p>
+        </div>
+        <div class="t-item">
+          <span class="t-date mono">2022</span>
+          <h4>High School</h4>
+          <p>Aryan Academy Inter College</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="section container reveal" id="skills">
+    <div class="section-head">
+      <div>
+        <div class="section-tag">What I work with</div>
+        <h2>Skills</h2>
+      </div>
+      <div class="section-num">02 / 04</div>
+    </div>
+
+    <div class="skills-wrap" id="skillsWrap">
+      <div class="skill-row">
+        <div>
+          <div class="skill-name">HTML</div>
+          <span class="skill-cat">Development</span>
+        </div>
+        <div class="track"><div class="ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="fill dev" data-value="95"><div class="head"></div></div></div>
+        <div class="skill-pct">95%</div>
+      </div>
+
+      <div class="skill-row">
+        <div>
+          <div class="skill-name">CSS</div>
+          <span class="skill-cat">Development</span>
+        </div>
+        <div class="track"><div class="ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="fill dev" data-value="85"><div class="head"></div></div></div>
+        <div class="skill-pct">85%</div>
+      </div>
+
+      <div class="skill-row">
+        <div>
+          <div class="skill-name">JavaScript</div>
+          <span class="skill-cat">Development</span>
+        </div>
+        <div class="track"><div class="ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="fill dev" data-value="70"><div class="head"></div></div></div>
+        <div class="skill-pct">70%</div>
+      </div>
+
+      <div class="skill-row">
+        <div>
+          <div class="skill-name">Photoshop</div>
+          <span class="skill-cat">Design</span>
+        </div>
+        <div class="track"><div class="ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="fill creative" data-value="90"><div class="head"></div></div></div>
+        <div class="skill-pct">90%</div>
+      </div>
+
+      <div class="skill-row">
+        <div>
+          <div class="skill-name">Video Editing</div>
+          <span class="skill-cat">Creative</span>
+        </div>
+        <div class="track"><div class="ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="fill creative" data-value="80"><div class="head"></div></div></div>
+        <div class="skill-pct">80%</div>
+      </div>
+
+      <div class="skill-row">
+        <div>
+          <div class="skill-name">DaVinci Resolve</div>
+          <span class="skill-cat">Creative</span>
+        </div>
+        <div class="track"><div class="ticks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="fill creative" data-value="50"><div class="head"></div></div></div>
+        <div class="skill-pct">50%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section container reveal" id="services">
+    <div class="section-head">
+      <div>
+        <div class="section-tag">What I offer</div>
+        <h2>Services</h2>
+      </div>
+      <div class="section-num">03 / 04</div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+        </div>
+        <h3>Website Development</h3>
+        <p>Responsive, fast-loading websites built with clean HTML, CSS and JavaScript.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"></circle><circle cx="17.5" cy="10.5" r=".5"></circle><circle cx="8.5" cy="7.5" r=".5"></circle><circle cx="6.5" cy="12.5" r=".5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg>
+        </div>
+        <h3>Graphic Design</h3>
+        <p>Posters, social media creatives and branding visuals designed in Photoshop.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+        </div>
+        <h3>Thumbnail Design</h3>
+        <p>Eye-catching, click-worthy thumbnails for YouTube videos and social posts.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2"></rect></svg>
+        </div>
+        <h3>Video Editing</h3>
+        <p>Editing, cutting and color grading footage in DaVinci Resolve for a polished result.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+        </div>
+        <h3>Photo Editing</h3>
+        <p>Retouching, color correction and compositing to get your photos looking their best.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+        </div>
+        <h3>Ongoing Support</h3>
+        <p>Updates, fixes and tweaks for your website or visuals whenever you need them.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section container reveal" id="contact">
+    <div class="section-head">
+      <div>
+        <div class="section-tag">Get in touch</div>
+        <h2>Contact me</h2>
+      </div>
+      <div class="section-num">04 / 04</div>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <div class="contact-info-item">
+          <div class="contact-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <div>
+            <h4>Email</h4>
+            <p>lsharma41001@gmail.com</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.36 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </div>
+          <div>
+            <h4>Phone</h4>
+            <p>+91 73981 86520</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          </div>
+          <div>
+            <h4>Address</h4>
+            <p>Kakori, Lucknow, Uttar Pradesh</p>
+          </div>
+        </div>
+      </div>
+      <form id="contactForm">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+        <div class="field">
+          <label for="email">Your email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Send message</button>
+        <p class="form-status" id="formStatus"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="container">
+  <span>© 2026 Sagar Sharma. All rights reserved.</span>
+  <span class="mono">Built with HTML, CSS &amp; JS</span>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+    hamburger.classList.toggle('open');
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Scroll-spy nav highlight
+  const sections = document.querySelectorAll('main section[id]');
+  const navAnchors = document.querySelectorAll('.nav-links a');
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navAnchors.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  sections.forEach(s => spy.observe(s));
+
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // Animate skill bars when skills section is visible
+  const skillBars = document.querySelectorAll('.fill');
+  const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        skillBars.forEach(bar => {
+          bar.style.width = bar.dataset.value + '%';
+        });
+        skillObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  skillObserver.observe(document.getElementById('skillsWrap'));
+
+  // Contact form -> opens mail client with prefilled message
+  const form = document.getElementById('contactForm');
+  const status = document.getElementById('formStatus');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+
+    const subject = encodeURIComponent('Portfolio inquiry from ' + name);
+    const body = encodeURIComponent(message + '\n\n— ' + name + ' (' + email + ')');
+    window.location.href = `mailto:lsharma41001@gmail.com?subject=${subject}&body=${body}`;
+
+    status.textContent = 'Opening your email app…';
+    setTimeout(() => { status.textContent = ''; }, 4000);
+  });
+</script>
+
+</body>
+</html>
